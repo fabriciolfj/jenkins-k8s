@@ -1,38 +1,43 @@
 pipeline {
-   agent any
 
-   environment {
-     // You must set the following environment variables
-     // ORGANIZATION_NAME
-     // YOUR_DOCKERHUB_USERNAME (it doesn't matter if you don't have one)
+  agent any
 
-     SERVICE_NAME = "product-service"
-     REPOSITORY_TAG="${YOUR_DOCKERHUB_USERNAME}/product:${BUILD_ID}"
-   }
+  stages {
 
-   stages {
-      stage('Preparation') {
-         steps {
-            cleanWs()
-            git credentialsId: 'GitHub', url: "https://github.com/fabriciolfj/jenkins-k8s"
-         }
+    stage('Checkout Source') {
+      steps {
+        git url:'https://github.com/fabriciolfj/jenkins-k8s', branch:'main'
       }
-      stage('Build') {
-         steps {
-            sh '''mvn clean package'''
-         }
-      }
+    }
 
-      stage('Build and Push Image') {
-         steps {
-           sh 'docker image build -t ${REPOSITORY_TAG} .'
-         }
-      }
+      stage("Build image") {
+            steps {
+                script {
+                    myapp = docker.build("fabricio211/product:${env.BUILD_ID}")
+                }
+            }
+        }
 
-      stage('Deploy to Cluster') {
-          steps {
-                    sh 'envsubst < ${WORKSPACE}/deploy.yaml | kubectl apply -f -'
-          }
+      stage("Push image") {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
+
+
+    stage('Deploy App') {
+      steps {
+        script {
+          kubernetesDeploy(configs: "deploy.yaml", kubeconfigId: "mykubeconfig")
+        }
       }
-   }
+    }
+
+  }
+
 }
