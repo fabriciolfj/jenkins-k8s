@@ -3,12 +3,6 @@ pipeline {
   agent any
 
   stages {
-
-   def mvnHome
-   stage('Preparation') {
-        mvnHome = tool 'M2_HOME'
-   }
-
    stage('Checkout Source') {
      steps {
        git url:'https://github.com/fabriciolfj/jenkins-k8s', branch:'main'
@@ -16,13 +10,7 @@ pipeline {
    }
 
    stage('Build') {
-      withEnv(["M2_HOME=$mvnHome"]) {
-         if (isUnix()) {
-            sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-         } else {
-            bat(/"%M2_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean package/)
-         }
-      }
+   bat("mvn -Dmaven.test.failure.ignore clean package")
    }
 
       stage("Build image") {
