@@ -35,13 +35,20 @@ pipeline {
         }
 
 
+    stage('ajuste deploy') {
+            environment {
+              tag_version = "${env.BUILD_ID}"
+            }
+            script {
+            sh 'sed -i "s/{{tag}}/$tag_version/g" ./k8s/deploy.yaml'
+            sh 'cat ./k8s/deploy.yaml'
+            }
+    }
     stage('Deploy App') {
-        environment {
-          tag_version = "${env.BUILD_ID}"
-        }
+
       steps {
         script {
-            sh 'sed -i "s/{{tag}}/$tag_version/g" ./k8s/deploy.yaml'
+
             kubernetesDeploy(configs: '**/k8s/**', kubeconfigId: 'kubeconfig')
         }
       }
