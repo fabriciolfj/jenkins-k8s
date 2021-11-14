@@ -4,15 +4,16 @@ pipeline {
 
   stages {
 
-   stage('Preparation') { // for display purposes
-           mvnHome = tool 'M2_HOME'
-        }
+   def mvnHome
+   stage('Preparation') {
+        mvnHome = tool 'M2_HOME'
+   }
 
-    stage('Checkout Source') {
-      steps {
-        git url:'https://github.com/fabriciolfj/jenkins-k8s', branch:'main'
-      }
-    }
+   stage('Checkout Source') {
+     steps {
+       git url:'https://github.com/fabriciolfj/jenkins-k8s', branch:'main'
+     }
+   }
 
    stage('Build') {
       withEnv(["M2_HOME=$mvnHome"]) {
