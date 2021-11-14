@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: products
-          image: fabricio211/product:1.57.0
+          image: fabricio211/product:{{tag}}
           imagePullPolicy: Always
           env:
             - name: SPRING_CONFIG_LOCATION
