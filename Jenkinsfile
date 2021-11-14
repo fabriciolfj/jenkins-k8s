@@ -38,7 +38,7 @@ pipeline {
     stage('Deploy App') {
       steps {
         script {
-          kubernetesDeploy(configs: "deploy.yaml", kubeconfigId: "mykubeconfig")
+          bat('kubectl apply -f deploy.yaml')
         }
       }
     }
