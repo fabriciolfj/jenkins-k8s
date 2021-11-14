@@ -11,7 +11,6 @@ pipeline {
     }
 
    stage('Build') {
-      // Run the maven build
       withEnv(["M2_HOME=$mvnHome"]) {
          if (isUnix()) {
             sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
