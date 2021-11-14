@@ -7,7 +7,7 @@ pipeline {
      // YOUR_DOCKERHUB_USERNAME (it doesn't matter if you don't have one)
 
      SERVICE_NAME = "product-service"
-     REPOSITORY_TAG="fabricio211/product:${BUILD_ID}"
+     REPOSITORY_TAG="${YOUR_DOCKERHUB_USERNAME}/product:${BUILD_ID}"
    }
 
    stages {
