@@ -10,7 +10,9 @@ pipeline {
    }
 
    stage('Build') {
-   bat("mvn -Dmaven.test.failure.ignore clean package")
+   steps {
+     bat("mvn -Dmaven.test.failure.ignore clean package")
+     }
    }
 
       stage("Build image") {
