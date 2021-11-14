@@ -36,14 +36,17 @@ pipeline {
 
 
     stage('ajuste deploy') {
-            environment {
+        environment {
               tag_version = "${env.BUILD_ID}"
-            }
+        }
+        steps {
             script {
-            sh 'sed -i "s/{{tag}}/$tag_version/g" ./k8s/deploy.yaml'
-            sh 'cat ./k8s/deploy.yaml'
+               sh 'sed -i "s/{{tag}}/$tag_version/g" ./k8s/deploy.yaml'
+               sh 'cat ./k8s/deploy.yaml'
             }
+        }
     }
+
     stage('Deploy App') {
 
       steps {
